@@ -2,10 +2,10 @@ import Gallery_arr from "./gallery_ar";
 
 function Gallery() {
   return (
-    <section className="px-6 py-8">
+    <section id="gallery" className="px-6 py-8">
 
-      <h2 className="mb-6 text-center text-2xl text-[#800000]">
-        My Photos
+      <h2 className="text-center text-3xl font-bold text-[#800000] mb-8">
+        My Gallery
       </h2>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">

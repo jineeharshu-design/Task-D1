@@ -2,8 +2,11 @@ import articles from "./Articles";
 
 function ArticleCard() {
 return ( 
-    <section className="px-6 py-8"> <h2 className="text-center text-3xl font-bold mb-8">
-    Featured Articles </h2>
+    <section id="articles" className="px-6 py-8"> 
+    <h2 className="text-center text-3xl font-bold text-[#800000] mb-8">
+        Featured Articles 
+    </h2>
+    
     <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
         {articles.map((article, index) => (
         <div key={index} className="text-left">

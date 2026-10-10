@@ -2,8 +2,10 @@ import tutorials from "./Tutorials";
 
 function TutorialCard() {
 return ( 
-    <section className="px-6 py-8"> <h2 className="text-center text-3xl font-bold mb-8">
-    Featured Tutorials </h2>
+    <section id="tutorials" className="px-6 py-8"> 
+    <h2 className="text-center text-3xl font-bold text-[#800000] mb-8">
+        Featured Tutorials 
+    </h2>
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
         {tutorials.map((tutorial, index) => (
