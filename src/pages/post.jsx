@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 
 function Post() {
@@ -88,102 +87,97 @@ function Post() {
                 What do you want to ask or share
             </h2>
 
-            <p className="mb-7 leading-relaxed">
-                This section is designed based on the type of the post.
-                It uses conditional rendering in React.
-            </p>
-
-        <div className="mb-6 flex flex-col gap-2">
-            <label htmlFor="post-title">Title</label>
-
-            <input
-                id="post-title"
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                maxLength={150}
-                placeholder={
-                    postType === "Question"
-                    ? "Start your question with how, what, why, etc."
-                    : "Enter a descriptive title"
-                }
-                className="w-full rounded-md border border-gray-700 bg-[#FFFEF5] p-3 outline-none focus:border-red-900 focus:ring-1 focus:ring-red-900"
-            />
-        </div>
-
-        {postType === "Question" ? (
             <div className="mb-6 flex flex-col gap-2">
-            <label htmlFor="description">
-                Describe your problem
-            </label>
+                <label htmlFor="post-title">Title</label>
 
-            <textarea
-                id="description"
-                rows={8}
-                maxLength={5000}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full resize-y rounded-md border border-gray-700 bg-[#FFFEF5] p-3 outline-none focus:border-red-900 focus:ring-1 focus:ring-red-900"
-            />
+                <input
+                    id="post-title"
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    maxLength={150}
+                    placeholder={
+                        postType === "Question"
+                        ? "Start your question with how, what, why, etc."
+                        : "Enter a descriptive title"
+                    }
+                    className="w-full rounded-md border border-gray-700 bg-[#FFFEF5] p-3 outline-none focus:border-red-900 focus:ring-1 focus:ring-red-900"
+                />
             </div>
-        ) : (
-            <>
-            <div className="mb-6 flex flex-col gap-2">
-                <label htmlFor="abstract">Abstract</label>
+
+            {postType === "Question" ? (
+                <div className="mb-6 flex flex-col gap-2">
+                <label htmlFor="description">
+                    Describe your problem
+                </label>
 
                 <textarea
-                    id="abstract"
-                    rows={3}
-                    maxLength={1000}
-                    value={abstract}
-                    onChange={(e) => setAbstract(e.target.value)}
-                    placeholder="Enter a 1-paragraph abstract"
-                    className="w-full resize-y rounded-md border border-gray-700 bg-[#FFFEF5] p-3 outline-none focus:border-red-900 focus:ring-1 focus:ring-red-900"
-                />
-                </div>
-
-            <div className="mb-6 flex flex-col gap-2">
-                <label htmlFor="article-text">Article Text</label>
-
-                <textarea
-                    id="article-text"
+                    id="description"
                     rows={8}
-                    maxLength={10000}
-                    value={articleText}
-                    onChange={(e) => setArticleText(e.target.value)}
-                    placeholder="Write your article here"
+                    maxLength={5000}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     className="w-full resize-y rounded-md border border-gray-700 bg-[#FFFEF5] p-3 outline-none focus:border-red-900 focus:ring-1 focus:ring-red-900"
                 />
                 </div>
-            </>
-        )}
+            ) : (
+                <>
+                <div className="mb-6 flex flex-col gap-2">
+                    <label htmlFor="abstract">Abstract</label>
 
-        <div className="mb-6 flex flex-col gap-2">
-            <label htmlFor="tags">Tags</label>
+                    <textarea
+                        id="abstract"
+                        rows={3}
+                        maxLength={1000}
+                        value={abstract}
+                        onChange={(e) => setAbstract(e.target.value)}
+                        placeholder="Enter a 1-paragraph abstract"
+                        className="w-full resize-y rounded-md border border-gray-700 bg-[#FFFEF5] p-3 outline-none focus:border-red-900 focus:ring-1 focus:ring-red-900"
+                    />
+                    </div>
 
-            <input
-                id="tags"
-                type="text"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                placeholder="Add up to 3 tags, e.g. React, Java"
-                className="w-full rounded-md border border-gray-700 bg-[#FFFEF5] p-3 outline-none focus:border-red-900 focus:ring-1 focus:ring-red-900"
-            />
+                <div className="mb-6 flex flex-col gap-2">
+                    <label htmlFor="article-text">Article Text</label>
 
-            <p className="text-sm text-gray-600">
-                Separate tags with commas. Maximum 3 tags.
-            </p>
-        </div>
+                    <textarea
+                        id="article-text"
+                        rows={8}
+                        maxLength={10000}
+                        value={articleText}
+                        onChange={(e) => setArticleText(e.target.value)}
+                        placeholder="Write your article here"
+                        className="w-full resize-y rounded-md border border-gray-700 bg-[#FFFEF5] p-3 outline-none focus:border-red-900 focus:ring-1 focus:ring-red-900"
+                    />
+                    </div>
+                </>
+            )}
 
-        <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={handlePost}
-              className="w-full rounded-lg bg-red-900 px-8 py-3 font-semibold text-white transition hover:bg-red-950 sm:w-52"
-            >
-              Post
-            </button>
-          </div>
+            <div className="mb-6 flex flex-col gap-2">
+                <label htmlFor="tags">Tags</label>
+
+                <input
+                    id="tags"
+                    type="text"
+                    value={tags}
+                    onChange={(e) => setTags(e.target.value)}
+                    placeholder="Add up to 3 tags, e.g. React, Java"
+                    className="w-full rounded-md border border-gray-700 bg-[#FFFEF5] p-3 outline-none focus:border-red-900 focus:ring-1 focus:ring-red-900"
+                />
+
+                <p className="text-sm text-gray-600">
+                    Separate tags with commas. Maximum 3 tags.
+                </p>
+            </div>
+
+            <div className="flex justify-end">
+                <button
+                    type="button"
+                    onClick={handlePost}
+                    className="w-full rounded-lg bg-red-900 px-8 py-3 font-semibold text-white transition hover:bg-red-950 sm:w-52"
+                    >
+                    Post
+                </button>
+            </div>
         </section>
       </div>
     </main>
