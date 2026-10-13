@@ -14,6 +14,9 @@ import Contact from './contact'
 import Footer from './footer'
 import Login from './pages/login'
 import Signup from './pages/signup'
+import Post from "./pages/post"
+
+// import ResetPassword from './pages/resetpass'
 
 function App() {
   const location = useLocation()
@@ -52,7 +55,9 @@ function App() {
         </>
         } />
 
+        <Route path="/post" element={<Post />} />
         <Route path="/login" element={<Login />} />
+        {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
         <Route path="/signup" element={<Signup />} />
 
         <Route path ="*" element ={<h1>404 Not Found</h1>} />
@@ -65,3 +70,5 @@ function App() {
 }
 
 export default App
+
+// npm install firebase

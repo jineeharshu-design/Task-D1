@@ -23,10 +23,12 @@ function Header() {
 
             <input  type="text" placeholder='Search' value={search} onChange={handlechange}/>
 
-            <button 
-                className="rounded-xl bg-[#800000] px-5 py-3 text-lg text-white hover:bg-[#600000]">
+            <Link
+                to="/post"
+                className="rounded-xl bg-[#800000] px-5 py-3 text-lg text-white hover:bg-[#600000]"
+            >
                 Post
-            </button>
+            </Link>
 
             <Link
                 to="/login"
