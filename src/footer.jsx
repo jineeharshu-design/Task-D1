@@ -1,6 +1,40 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 function Footer() {
+    const [email, setEmail] = useState('')
+    const [message, setMessage] = useState('')
+    const [loading, setLoading] = useState(false)
+
+    const handleSubscribe = async (e) => {
+        e.preventDefault()
+
+        setMessage('')
+        setLoading(true)
+
+        try {
+            const response = await fetch('http://localhost:3000/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            })
+
+            const result = await response.text()
+
+            if (!response.ok) {
+                throw new Error(result || 'Subscription failed.')
+            }
+
+            alert(result)
+            setEmail('')
+        } catch (error) {
+            alert(error.message || 'Something went wrong. Please try again.')
+        } finally {
+            setLoading(false)
+        }
+    }
     return (
         <>
             <section className="bg-blue-200 mx-auto mt-10 flex items-center justify-between px-4 py-2">
@@ -10,9 +44,8 @@ function Footer() {
                 </p>
 
                 <form
-                    className="bg-blue-200 mx-auto mt-10 flex items-center justify-between px-4 py-2"
-                    action="/subscribe"
-                    method="post"
+                    className="flex flex-col sm:flex-row items-center gap-3"
+                    onSubmit={handleSubscribe}
                 >
 
                 <input
@@ -21,19 +54,24 @@ function Footer() {
                     type="email"
                     id="email"
                     placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                 />
 
                 <button
                     className="bg-gray-500 px-4 py-3 text-lg"
                     type="submit"
+                    disabled={loading}
                 >
-                    Subscribe
+                    {loading ? 'Subscribing...' : 'Subscribe'}
                 </button>
 
                 </form>
 
-                <p id="message"></p>
+                <p className="mt-3 text-center" role="status" aria-live="polite">
+                    {message}
+                </p>
             </section>
 
             <div className="bg-blue-200 px-8 py-8">

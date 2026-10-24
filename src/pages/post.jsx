@@ -28,7 +28,7 @@ function Post() {
       postType === "Article" &&
       (!abstract.trim() || !articleText.trim())
     ) {
-      alert("Please enter the abstract");
+      alert("Please enter the abstract")
       return;
     }
 
@@ -42,7 +42,7 @@ function Post() {
       return;
     }
 
-    alert(`Your ${postType.toLowerCase()} has been submitted!`);
+    alert("Your ${postType.toLowerCase()} has been submitted!");
   }
 
   return (

@@ -29,7 +29,7 @@ function App() {
       ({
         behavior: 'smooth'  // smooth scrolling
       })
-    } 
+    }
     else 
     {
       window.scrollTo(0, 0)  // if there is no hash, scroll to the top of the page

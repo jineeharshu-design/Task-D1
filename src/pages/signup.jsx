@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   createUserWithEmailAndPassword,
   updateProfile
 } from 'firebase/auth'
-import { auth } from '../firebase'
+import { auth, db } from '../firebase'
+import { doc, setDoc } from 'firebase/firestore'
 
 function Signup() {
   const [name, setName] = useState('')
@@ -12,6 +13,8 @@ function Signup() {
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const navigate = useNavigate()
 
   async function handleSignup(event) {
     event.preventDefault()
@@ -29,7 +32,14 @@ function Signup() {
         displayName: name
       })
 
+      await setDoc(doc(db, 'users', result.user.uid), {
+        name: name,
+        email: email,
+        createdAt: new Date()
+      })
+
       setMessage('Account created successfully!')
+      navigate('/login')
     } catch (error) {
       setMessage(error.message)
     } finally {
