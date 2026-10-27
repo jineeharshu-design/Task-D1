@@ -21,3 +21,4 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app)  
 export const db = getFirestore(app)
 // this is used by login and signup pages that can import auth to register users and sign them in
+

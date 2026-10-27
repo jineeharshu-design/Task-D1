@@ -15,7 +15,7 @@ import Footer from './footer'
 import Login from './pages/login'
 import Signup from './pages/signup'
 import Post from "./pages/post"
-
+import Pricing from './pages/pricing.jsx'
 // import ResetPassword from './pages/resetpass'
 
 function App() {
@@ -44,21 +44,22 @@ function App() {
 
         <Route path="/" element={
           <>
-          <Navigation />
-          <Banner />
-          <About />
-          <Work />
-          <Gallery />
-          <ArticleCard />
-          <TutorialCard />
-          <Contact />
-        </>
+            <Navigation />
+            <Banner />
+            <About />
+            <Work />
+            <Gallery />
+            <ArticleCard />
+            <TutorialCard />
+            <Contact />
+          </>
         } />
 
         <Route path="/post" element={<Post />} />
         <Route path="/login" element={<Login />} />
         {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
         <Route path="/signup" element={<Signup />} />
+        <Route path="/pricing" element={<Pricing />} />
 
         <Route path ="*" element ={<h1>404 Not Found</h1>} />
 
@@ -72,3 +73,4 @@ function App() {
 export default App
 
 // npm install firebase
+

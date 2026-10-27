@@ -8,13 +8,13 @@ import { auth, db } from '../firebase'
 import { doc, setDoc } from 'firebase/firestore'
 
 function Signup() {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(false)
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [message, setMessage] = useState('')
+    const [loading, setLoading] = useState(false)
 
-  const navigate = useNavigate()
+    const navigate = useNavigate()
 
   async function handleSignup(event) {
     event.preventDefault()
@@ -35,6 +35,7 @@ function Signup() {
       await setDoc(doc(db, 'users', result.user.uid), {
         name: name,
         email: email,
+        plan: 'Free',
         createdAt: new Date()
       })
 

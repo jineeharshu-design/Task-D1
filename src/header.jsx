@@ -1,8 +1,20 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { useAuth } from './context/authContext.jsx'
 
 function Header() {
     let [search, setsearch] =useState("")
+    const { user, loading, logout } = useAuth()
+    const navigate = useNavigate()
+
+    async function handleLogout() {
+    try {
+        await logout()
+        navigate('/login')
+    } catch (error) {
+        console.error('Logout failed:', error)
+        alert('Unable to log out. Please try again.')
+    } }
     
     function handlechange(event){
         let value = event.target.value;
@@ -21,7 +33,12 @@ function Header() {
 
             <div className="flex flex-wrap items-center gap-4">
 
-            <input  type="text" placeholder='Search' value={search} onChange={handlechange}/>
+            <input  
+                type="text" 
+                placeholder='Search' 
+                value={search} 
+                onChange={handlechange}
+            />
 
             <Link
                 to="/post"
@@ -30,15 +47,44 @@ function Header() {
                 Post
             </Link>
 
-            <Link
-                to="/login"
-                className="rounded-xl bg-[#800000] px-5 py-3 text-lg text-white hover:bg-[#600000]"
-            >
-                Login
-            </Link>
+            {!loading && (
+                user ? (
+                    <>
+                        <span>
+                            Hi, {user.displayName}
+                        </span>
+
+                        <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="rounded-xl bg-[#800000] px-5 py-3 text-lg text-white hover:bg-[#600000]"
+                        >
+                            Logout
+                        </button>
+
+                        <Link 
+                            to="/pricing"
+                            className="rounded-xl bg-[#800000] px-5 py-3 text-lg text-white hover:bg-[#600000]"
+                        >
+                            Pricing
+                        </Link>
+                    </>
+                ) : (
+                    <>
+                        <Link
+                            to="/login"
+                            className="rounded-xl bg-[#800000] px-5 py-3 text-lg text-white hover:bg-[#600000]"
+                        >
+                            Login
+                        </Link>
+                    </>
+                )
+            )}
         </div> </div>
         </header>
     )
 }
 
 export default Header
+
+

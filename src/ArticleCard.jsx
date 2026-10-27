@@ -11,17 +11,17 @@ return (
         {articles.map((article, index) => (
         <div key={index} className="text-left">
             <img
-            src={article.image}
-            alt="Article"
-            className="w-full h-40 object-cover"
+                src={article.image}
+                alt="Article"
+                className="w-full h-40 object-cover"
             />
 
             <h3 className="mt-3 font-bold text-lg">
-            {article.title}
+                {article.title}
             </h3>
 
             <p className="mt-2 text-gray-600">
-            Description: {article.description}
+                Description: {article.description}
             </p>
 
             <hr className="my-3" />

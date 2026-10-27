@@ -11,17 +11,17 @@ return (
         {tutorials.map((tutorial, index) => (
         <div key={index} className="text-left">
             <img
-            src={tutorial.image}
-            alt="Tutorial"
-            className="w-full h-40 object-cover"
+                src={tutorial.image}
+                alt="Tutorial"
+                className="w-full h-40 object-cover"
             />
 
             <h3 className="mt-3 font-bold text-lg">
-            {tutorial.title}
+                {tutorial.title}
             </h3>
 
             <p className="mt-2 text-gray-600">
-            Description: {tutorial.description}
+                Description: {tutorial.description}
             </p>
 
             <hr className="my-3" />

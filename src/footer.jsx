@@ -3,13 +3,11 @@ import { Link } from 'react-router-dom'
 
 function Footer() {
     const [email, setEmail] = useState('')
-    const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(false)
 
     const handleSubscribe = async (e) => {
         e.preventDefault()
 
-        setMessage('')
         setLoading(true)
 
         try {
@@ -37,10 +35,10 @@ function Footer() {
     }
     return (
         <>
-            <section className="bg-blue-200 mx-auto mt-10 flex items-center justify-between px-4 py-2">
+            <section className="bg-blue-200 mx-auto mt-10 flex flex-col items-center justify-between gap-5 px-4 py-2">
 
                 <p className="text-[18px] font-bold text-[#111]">
-                SIGN UP FOR OUR DAILY INSIDER
+                    SIGN UP FOR OUR DAILY INSIDER
                 </p>
 
                 <form
@@ -68,10 +66,6 @@ function Footer() {
                 </button>
 
                 </form>
-
-                <p className="mt-3 text-center" role="status" aria-live="polite">
-                    {message}
-                </p>
             </section>
 
             <div className="bg-blue-200 px-8 py-8">
