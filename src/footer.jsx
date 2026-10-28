@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+const API_URL = import.meta.env.VITE_API_URL
+
 function Footer() {
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
@@ -11,7 +13,7 @@ function Footer() {
         setLoading(true)
 
         try {
-            const response = await fetch('http://localhost:3000/subscribe', {
+            const response = await fetch(`${API_URL}/subscribe`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -374,6 +374,34 @@ app.get('/api/me', authenticateToken, async (req, res) => {
     }
 });
 
+app.post('/api/upgrade', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: 'Invalid authentication token.'
+      });
+    }
+
+    await db.collection('users').doc(userId).update({
+      plan: 'Paid',
+      upgradedAt: FieldValue.serverTimestamp()
+    });
+
+    return res.status(200).json({
+      message: 'Your demo upgrade was successful.',
+      plan: 'Paid'
+    });
+  } catch (error) {
+    console.error('Upgrade failed:', error);
+
+    return res.status(500).json({
+      message: 'Could not update your plan.'
+    });
+  }
+});
+
 // START SERVER 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

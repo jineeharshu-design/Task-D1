@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 // import { db } from '../firebase'
 import { useAuth } from '../context/authContext.jsx'
 
+const API_URL = import.meta.env.VITE_API_URL
+
 function Pricing() {
   const { user } = useAuth()
 
@@ -42,7 +44,7 @@ function Pricing() {
           return
         }
 
-        const response = await fetch('http://localhost:3000/api/me', {
+        const response = await fetch(`${API_URL}/api/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -144,32 +146,50 @@ function Pricing() {
     setSaving(true)
 
     try {
-      const userRef = doc(db, 'users', user.uid)
+      const token = localStorage.getItem('token')
+      // const userRef = doc(db, 'users', user.uid)
 
-      // Save only the plan status, not payment details.
-      await setDoc(
-        userRef,
-        {
-          name: user.displayName || '',
-          email: user.email || '',
-          plan: 'Paid',
-          upgradedAt: new Date(),
-        },
-        { merge: true }
-      )
+      if (!token) {
+        throw new Error('Your session has expired. Please log in again.')
+      }
 
-      setPlan('Paid')
-      setMessage('Your plan has been upgraded to Paid!')
+      const response = await fetch(`${API_URL}/api/upgrade`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Could not update your plan.')
+      }
+
+      // // Save only the plan status, not payment details.
+      // await setDoc(
+      //   userRef,
+      //   {
+      //     name: user.displayName || '',
+      //     email: user.email || '',
+      //     plan: 'Paid',
+      //     upgradedAt: new Date(),
+      //   },
+      //   { merge: true }
+      // )
+
+      setPlan(data.plan || 'Paid')
+      setMessage('Your demo plan has been upgraded to Paid!')
       closeModal()
     } catch (error) {
       console.error('Upgrade failed:', error)
-      setErrorMessage(
-        'Could not update your plan. Check your Firestore rules and try again.'
-      )
+      setErrorMessage(error.message || 'Could not update your plan.')
     } finally {
       setSaving(false)
     }
   }
+
 
   const features = [
     ['Browse articles and tutorials', true, true],
@@ -313,8 +333,7 @@ function Pricing() {
             </h2>
 
             <p className="mt-2 text-sm text-gray-600">
-              Demo form only. No real payment will be taken. Use dummy
-              payment details, not your real card information.
+              Demo form. No real payment will be taken
             </p>
 
             <label className="mt-5 block font-medium" htmlFor="cardName">
