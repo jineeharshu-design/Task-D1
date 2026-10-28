@@ -100,8 +100,26 @@ function Pricing() {
       return
     }
 
+    // checks the expiry date format
     if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(payment.expiry)) {
-      setErrorMessage('Enter the expiry date in MM/YY format.')
+      setErrorMessage('Enter a valid expiry date in MM/YY format.')
+      return
+    }
+
+    // checks whether the card has expired
+    const [month, year] = payment.expiry.split('/')
+    const expiryMonth = Number(month)
+    const expiryYear = 2000 + Number(year)
+
+    const today = new Date()
+    const currentMonth = today.getMonth() + 1
+    const currentYear = today.getFullYear()
+
+    if (
+      expiryYear < currentYear ||
+      (expiryYear === currentYear && expiryMonth < currentMonth)
+    ) {
+      setErrorMessage('This card has expired. Please enter a valid expiry date.')
       return
     }
 
