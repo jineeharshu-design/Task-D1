@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
-import { db } from '../firebase'
+// import { Link } from 'react-router-dom'
+// import { doc, getDoc, setDoc } from 'firebase/firestore'
+// import { db } from '../firebase'
 import { useAuth } from '../context/authContext.jsx'
 
 function Pricing() {
@@ -34,17 +34,30 @@ function Pricing() {
       setErrorMessage('')
 
       try {
-        const userRef = doc(db, 'users', user.uid)
-        const userSnapshot = await getDoc(userRef)
-
-        if (userSnapshot.exists()) {
-          setPlan(userSnapshot.data().plan || 'Free')
-        } else {
+        const token = localStorage.getItem('token')
+        
+        if (!token) {
           setPlan('Free')
+          setErrorMessage('Please log in to load your plan.')
+          return
         }
+
+        const response = await fetch('http://localhost:3000/api/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Could not load your plan.')
+        }
+
+        setPlan(data.user.plan || 'Free')
       } catch (error) {
         console.error('Could not load plan:', error)
-        setErrorMessage('Could not load your plan. Please refresh the page.')
+        setErrorMessage('Could not load your plan. Please try again.')
       } finally {
         setLoadingPlan(false)
       }
@@ -252,9 +265,17 @@ function Pricing() {
                   Get additional features to support your learning.
                 </p>
 
-                <p className="mt-6 rounded-lg bg-gray-100 p-3 text-center font-semibold">
-                  {plan === 'Paid' ? 'Your Current Plan' : 'Paid Plan'}
-                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setErrorMessage('')
+                    setShowModal(true)
+                  }}
+                  disabled={plan === 'Paid'}
+                  className="mt-6 w-full rounded-xl bg-[#800000] px-5 py-3 font-semibold text-white hover:bg-[#600000] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {plan === 'Paid' ? 'Already on Paid Plan' : 'Upgrade Plan'}
+                </button>
 
                 <div className="mt-6 flex-1">
                   <h3 className="mb-4 font-bold text-gray-800">
@@ -274,18 +295,6 @@ function Pricing() {
                     ))}
                   </ul>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setErrorMessage('')
-                    setShowModal(true)
-                  }}
-                  disabled={plan === 'Paid'}
-                  className="mt-6 w-full rounded-xl bg-[#800000] px-5 py-3 font-semibold text-white hover:bg-[#600000] disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {plan === 'Paid' ? 'Already on Paid Plan' : 'Upgrade Plan'}
-                </button>
               </section>
             </div>
           </>
