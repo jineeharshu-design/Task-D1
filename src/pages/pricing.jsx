@@ -288,37 +288,6 @@ function Pricing() {
                 </button>
               </section>
             </div>
-
-            {/* Plan comparison */}
-            <section className="mt-12 overflow-x-auto">
-              <h2 className="mb-5 text-2xl font-bold text-[#800000]">
-                Compare Plans
-              </h2>
-
-              <table className="w-full border-collapse text-left">
-                <thead>
-                  <tr className="bg-[#800000] text-white">
-                    <th className="p-4">Features</th>
-                    <th className="p-4 text-center">Free</th>
-                    <th className="p-4 text-center">Paid</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {features.map(([feature, free, paid]) => (
-                    <tr key={feature} className="border-b border-gray-200">
-                      <td className="p-4">{feature}</td>
-                      <td className="p-4 text-center">
-                        {free ? '✓' : '—'}
-                      </td>
-                      <td className="p-4 text-center">
-                        {paid ? '✓' : '—'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
           </>
         )}
       </div>
