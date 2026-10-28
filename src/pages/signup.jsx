@@ -1,11 +1,7 @@
+
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import {
-  createUserWithEmailAndPassword,
-  updateProfile
-} from 'firebase/auth'
-import { auth, db } from '../firebase'
-import { doc, setDoc } from 'firebase/firestore'
+import { useAuth } from '../context/authContext'
 
 function Signup() {
     const [name, setName] = useState('')
@@ -14,101 +10,89 @@ function Signup() {
     const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(false)
 
+    const { register } = useAuth()
     const navigate = useNavigate()
 
-  async function handleSignup(event) {
-    event.preventDefault()
-    setMessage('')
-    setLoading(true)
+    async function handleSignup(event) {
+        event.preventDefault()
+        setMessage('')
+        setLoading(true)
 
-    try {
-      const result = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
+        try {
+            await register(name.trim(), email.trim(), password)
 
-      await updateProfile(result.user, {
-        displayName: name
-      })
-
-      await setDoc(doc(db, 'users', result.user.uid), {
-        name: name,
-        email: email,
-        plan: 'Free',
-        createdAt: new Date()
-      })
-
-      setMessage('Account created successfully!')
-      navigate('/login')
-    } catch (error) {
-      setMessage(error.message)
-    } finally {
-      setLoading(false)
+            setMessage('Account created successfully!')
+            navigate('/login', {
+                state: { message: 'Account created successfully! Please log in.' }
+            })
+        } catch (error) {
+            setMessage(error.message || 'Registration failed. Please try again.')
+        } finally {
+            setLoading(false)
+        }
     }
-  }
 
-  return (
-    <div className="min-h-screen flex justify-center items-center">
-      <form
-        onSubmit={handleSignup}
-        className="w-full max-w-md p-8"
-      >
-        <h1 className="text-3xl font-bold text-[#800000]">
-          Create an Account
-        </h1>
+    return (
+        <div className="min-h-screen flex justify-center items-center">
+            <form
+                onSubmit={handleSignup}
+                className="w-full max-w-md p-8"
+            >
+                <h1 className="text-3xl font-bold text-[#800000]">
+                    Create an Account
+                </h1>
 
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-2 mt-4 border rounded-md"
-          required
-        />
+                <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-4 py-2 mt-4 border rounded-md"
+                    required
+                />
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-2 mt-4 border rounded-md"
-          required
-        />
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-2 mt-4 border rounded-md"
+                    required
+                />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-4 py-2 mt-4 border rounded-md"
-          minLength={6}
-          required
-        />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-2 mt-4 border rounded-md"
+                    minLength={6}
+                    required
+                />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full px-4 py-2 mt-4 bg-[#800000] text-white rounded-md hover:bg-[#a52a2a] disabled:opacity-50"
-        >
-          {loading ? 'Creating account...' : 'Sign Up'}
-        </button>
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full px-4 py-2 mt-4 bg-[#800000] text-white rounded-md hover:bg-[#a52a2a] disabled:opacity-50"
+                >
+                    {loading ? 'Creating account...' : 'Sign Up'}
+                </button>
 
-        {message && (
-          <p className="mt-4 break-words" role="status">
-            {message}
-          </p>
-        )}
+                {message && (
+                    <p className="mt-4 break-words" role="status">
+                        {message}
+                    </p>
+                )}
 
-        <p className="mt-4 text-center">
-          Already have an account?{' '}
-          <Link to="/login" className="text-[#800000] underline">
-            Login
-          </Link>
-        </p>
-      </form>
-    </div>
-  )
+                <p className="mt-4 text-center">
+                    Already have an account?{' '}
+                    <Link to="/login" className="text-[#800000] underline">
+                        Login
+                    </Link>
+                </p>
+            </form>
+        </div>
+    )
 }
 
 export default Signup

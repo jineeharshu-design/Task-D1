@@ -51,7 +51,7 @@ function Header() {
                 user ? (
                     <>
                         <span>
-                            Hi, {user.displayName}
+                            Hi, {user.name}
                         </span>
 
                         <button

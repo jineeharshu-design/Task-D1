@@ -195,7 +195,7 @@ function Pricing() {
           <>
             <div className="mt-10 grid gap-8 md:grid-cols-2">
               {/* Free plan */}
-              <section className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+              <section className="flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
                 <h2 className="text-2xl font-bold text-[#800000]">
                   Free Plan
                 </h2>
@@ -214,10 +214,29 @@ function Pricing() {
                 <p className="mt-6 rounded-lg bg-gray-100 p-3 text-center font-semibold">
                   {plan === 'Free' ? 'Your Current Plan' : 'Free Plan'}
                 </p>
+
+                <div className="mt-6 flex-1">
+                  <h3 className="mb-4 font-bold text-gray-800">
+                    What's included
+                  </h3>
+
+                  <ul className="space-y-4">
+                    {features.map(([feature, free]) => (
+                      <li key={feature} className="flex items-start gap-3">
+                        <span className={free ? 'font-bold text-green-700' : 'text-gray-400'}>
+                          {free ? '✓' : '—'}
+                        </span>
+                        <span className={free ? 'text-gray-700' : 'text-gray-400'}>
+                          {feature}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </section>
 
               {/* Paid plan */}
-              <section className="rounded-2xl border-2 border-[#800000] bg-white p-8 shadow-sm">
+              <section className="flex flex-col rounded-2xl border-2 border-[#800000] bg-white p-8 shadow-sm">
                 <h2 className="text-2xl font-bold text-[#800000]">
                   Paid Plan
                 </h2>
@@ -232,6 +251,29 @@ function Pricing() {
                 <p className="mt-4 text-gray-600">
                   Get additional features to support your learning.
                 </p>
+
+                <p className="mt-6 rounded-lg bg-gray-100 p-3 text-center font-semibold">
+                  {plan === 'Paid' ? 'Your Current Plan' : 'Paid Plan'}
+                </p>
+
+                <div className="mt-6 flex-1">
+                  <h3 className="mb-4 font-bold text-gray-800">
+                    What's included
+                  </h3>
+
+                  <ul className="space-y-4">
+                    {features.map(([feature, free, paid]) => (
+                      <li key={feature} className="flex items-start gap-3">
+                        <span className="font-bold text-green-700">
+                          {paid ? '✓' : '—'}
+                        </span>
+                        <span className="text-gray-700">
+                          {feature}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
                 <button
                   type="button"
