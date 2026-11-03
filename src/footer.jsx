@@ -80,20 +80,24 @@ function Footer() {
                         Explore
                     </h3>
 
-                    <Link to="/">
+                    <Link to="/" className="hover:underline">
                         Home
                     </Link>
 
-                    <Link to="/#gallery">
+                    <Link to="/#gallery" className="hover:underline">
                         Gallery
                     </Link>
 
-                    <Link to="/#articles">
+                    <Link to="/#articles" className="hover:underline">
                         Articles
                     </Link>
-                    
-                    <Link to="/#tutorials">
+
+                    <Link to="/#tutorials" className="hover:underline">
                         Tutorials
+                    </Link>
+
+                    <Link to = "/browse-posts" className="hover:underline">
+                        Browse Posts
                     </Link>
                 </div>
 

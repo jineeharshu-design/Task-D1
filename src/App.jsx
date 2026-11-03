@@ -16,6 +16,7 @@ import Login from './pages/login'
 import Signup from './pages/signup'
 import Post from "./pages/post"
 import Pricing from './pages/pricing.jsx'
+import BrowsePosts from './pages/browsePosts'
 // import ResetPassword from './pages/resetpass'
 
 function App() {
@@ -39,12 +40,11 @@ function App() {
   return (
     <>
       <Header />
-
+      <Navigation />
       <Routes>
 
         <Route path="/" element={
           <>
-            <Navigation />
             <Banner />
             <About />
             <Work />
@@ -56,6 +56,7 @@ function App() {
         } />
 
         <Route path="/post" element={<Post />} />
+        <Route path="/browse-posts" element={<BrowsePosts />} />
         <Route path="/login" element={<Login />} />
         {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
         <Route path="/signup" element={<Signup />} />

@@ -47,6 +47,13 @@ function Header() {
                 Post
             </Link>
 
+            <Link
+                to="/browse-posts"
+                className="rounded-xl bg-[#800000] px-5 py-3 text-lg text-white hover:bg-[#600000]"
+            >
+                Browse Posts
+            </Link>
+
             {!loading && (
                 user ? (
                     <>

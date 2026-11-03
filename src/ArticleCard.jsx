@@ -27,8 +27,8 @@ return (
             <hr className="my-3" />
 
             <div className="flex justify-between">
-            <span>{article.rating}</span>
-            <span>{article.author}</span>
+            <span>{article.rating} stars</span>
+            <span>{article.planType}</span>
             </div>
         </div>
         ))}

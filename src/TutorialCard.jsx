@@ -27,8 +27,8 @@ return (
             <hr className="my-3" />
 
             <div className="flex justify-between">
-            <span>{tutorial.rating}</span>
-            <span>{tutorial.author}</span>
+            <span>{tutorial.rating} stars</span>
+            <span>{tutorial.planType}</span>
             </div>
         </div>
         ))}

@@ -355,6 +355,36 @@ function authenticateToken(req, res, next) {
     });
 }
 
+// AUTHENTICATION FOR BROWSING POSTS (for user not logged in)
+function optionalAuthenticateToken(req, res, next) {
+    const authorization = req.headers.authorization;
+
+    // allows visitors without a token
+    if (!authorization) {
+        req.user = null;
+        return next();
+    }
+
+    if (!authorization.startsWith('Bearer ')) {
+        return res.status(401).json({
+            message: 'Invalid authentication format.'
+        });
+    }
+
+    const token = authorization.split(' ')[1];
+
+    jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
+        if (error) {
+            return res.status(401).json({
+                message: 'Your session is invalid or expired. Please log in again.'
+            });
+        }
+
+        req.user = decoded;
+        next();
+    });
+}
+
 // CURRENT USER 
 app.get('/api/me', authenticateToken, async (req, res) => {
     try {
@@ -414,6 +444,225 @@ app.post('/api/upgrade', authenticateToken, async (req, res) => {
       message: 'Could not update your plan.'
     });
   }
+});
+
+// CREATE POST
+app.post('/api/posts', authenticateToken, async (req, res) => {
+    try {
+        const {
+            title,
+            postType,
+            planType,
+            description,
+            abstract,
+            articleText,
+            tags
+        } = req.body;
+
+        // Check the title
+        if (
+            typeof title !== 'string' ||
+            !title.trim() ||
+            title.trim().length > 150
+        ) {
+            return res.status(400).json({
+                message: 'Please enter a valid title (maximum 150 characters).'
+            });
+        }
+
+        // Check post type
+        if (!['Question', 'Article'].includes(postType)) {
+            return res.status(400).json({
+                message: 'Invalid post type.'
+            });
+        }
+
+        // Check post plan
+        if (!['Free', 'Paid'].includes(planType)) {
+            return res.status(400).json({
+                message: 'Invalid post plan.'
+            });
+        }
+
+        // Validate tags
+        if (!Array.isArray(tags) || tags.length > 3) {
+            return res.status(400).json({
+                message: 'You can add a maximum of 3 tags.'
+            });
+        }
+
+        const cleanTags = tags.map(tag =>
+            typeof tag === 'string' ? tag.trim() : ''
+        );
+
+        if (
+            cleanTags.some(tag =>
+                !tag || tag.length > 30
+            )
+        ) {
+            return res.status(400).json({
+                message: 'Each tag must contain 1–30 characters.'
+            });
+        }
+
+        // Check the content based on post type
+        if (postType === 'Question') {
+            if (
+                typeof description !== 'string' ||
+                !description.trim() ||
+                description.trim().length > 5000
+            ) {
+                return res.status(400).json({
+                    message: 'Please enter a valid problem description.'
+                });
+            }
+        }
+
+        if (postType === 'Article') {
+            if (
+                typeof abstract !== 'string' ||
+                !abstract.trim() ||
+                abstract.trim().length > 1000
+            ) {
+                return res.status(400).json({
+                    message: 'Please enter a valid article abstract.'
+                });
+            }
+
+            if (
+                typeof articleText !== 'string' ||
+                !articleText.trim() ||
+                articleText.trim().length > 10000
+            ) {
+                return res.status(400).json({
+                    message: 'Please enter valid article text.'
+                });
+            }
+        }
+
+        // Retrieve the logged-in user from Firestore
+        const userRef = db.collection('users').doc(req.user.userId);
+        const userDoc = await userRef.get();
+
+        if (!userDoc.exists) {
+            return res.status(404).json({
+                message: 'User account not found.'
+            });
+        }
+
+        const user = userDoc.data();
+        const userPlan = user.plan || 'Free';
+
+        // Only Paid users can publish Paid posts
+        if (planType === 'Paid' && userPlan !== 'Paid') {
+            return res.status(403).json({
+                message: 'Upgrade to the Paid plan to publish Paid posts.'
+            });
+        }
+
+        // Prepare post information
+        const postData = {
+            title: title.trim(),
+            postType,
+            planType,
+            description: postType === 'Question'
+                ? description.trim()
+                : '',
+            abstract: postType === 'Article'
+                ? abstract.trim()
+                : '',
+            articleText: postType === 'Article'
+                ? articleText.trim()
+                : '',
+            tags: [...new Set(cleanTags)],
+            userId: req.user.userId,
+            createdAt: FieldValue.serverTimestamp()
+        };
+
+        // Save post to Firestore
+        const postRef = await db.collection('posts').add(postData);
+
+        return res.status(201).json({
+            message: 'Your post was published successfully!',
+            postId: postRef.id
+        });
+
+    } catch (error) {
+        console.error('Post creation error:', error);
+
+        return res.status(500).json({
+            message: 'Unable to publish your post. Please try again.'
+        });
+    }
+});
+
+// BROWSE POSTS
+app.get('/api/posts', optionalAuthenticateToken, async (req, res) => {
+    try {
+        let allowedPlans = ['Free']; // Default to Free posts for visitors
+
+        // If logged in, retrieve the user's current plan from Firestore
+        if (req.user) {
+            const userDoc = await db
+                .collection('users')
+                .doc(req.user.userId)
+                .get();
+
+            if (!userDoc.exists) {
+                return res.status(404).json({
+                    message: 'User account not found.'
+                });
+            }
+
+            const user = userDoc.data();
+
+            // Paid users can see both Free and Paid posts
+            if (user.plan === 'Paid') {
+                allowedPlans = ['Free', 'Paid'];
+            }
+        }
+
+        // Only retrieve posts the visitor is allowed to see
+        const postsSnapshot = await db
+            .collection('posts')
+            .where('planType', 'in', allowedPlans)
+            .get();
+
+        const posts = postsSnapshot.docs.map(doc => {
+            const post = doc.data();
+
+            return {
+                id: doc.id,
+                title: post.title,
+                postType: post.postType,
+                planType: post.planType,
+                description: post.description || '',
+                abstract: post.abstract || '',
+                articleText: post.articleText || '',
+                tags: post.tags || [],
+                userId: post.userId,
+                createdAt: post.createdAt
+                    ? post.createdAt.toDate().toISOString()
+                    : null
+            };
+        });
+
+        // Show newest posts first
+        posts.sort((a, b) => {
+            return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        });
+
+        return res.status(200).json({
+            posts
+        });
+
+    } catch (error) {
+        console.error('Browse posts error:', error);
+
+        return res.status(500).json({
+            message: 'Unable to load posts. Please try again.'
+        });
+    }
 });
 
 // START SERVER 
